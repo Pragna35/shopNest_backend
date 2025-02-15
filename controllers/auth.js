@@ -37,6 +37,7 @@ const register = (req,res) => {
 
 //handling login 
 const login = (req,res) => {
+
    
    const query = `select * from users where name = ?`;
    db.query(query, req.body.name, (err, result) => {
@@ -57,8 +58,10 @@ const login = (req,res) => {
             return res.status(400).json({message:"Invalid credentials"})
         }
 
-        const token = jwt.sign({id:user.user_id},process.env.JWT_SECRET)
-        res.status(200).json({token,message:"login successful!"})
+        const token = jwt.sign({id:user.user_id} , process.env.JWT_SECRET)
+
+      
+        res.status(200).json({token,username:user.name,message:"login successful!"})
     })
 
    })
@@ -79,7 +82,7 @@ const generateOTP = () => {
         }
     });
 
-//if we forget password
+//send OTP (if we forget password)
 const sendOtp = (req,res) => {
     const q = `select * from  users where email=?`;
  db.query(q, [req.body.email], (err,result) => {
@@ -140,6 +143,8 @@ const verifyOTP = (req,res) => {
 
 }
 
+
+//reset password
 const resetPassword = async (req, res) => {
 
     const {email, password} = req.body;
@@ -166,4 +171,16 @@ const resetPassword = async (req, res) => {
 
 }
 
-module.exports = {register,login, sendOtp, verifyOTP, resetPassword}
+
+//logout
+const logout = (req, res) => {
+    try{
+        return res.status(200).json({message:"logged out successfully"})
+    }catch (err){
+       
+        return res.status(500).json({message:"logout error"})
+    }
+
+}
+
+module.exports = {register,login, sendOtp, verifyOTP, resetPassword, logout}
