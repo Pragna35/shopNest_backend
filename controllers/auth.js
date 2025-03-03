@@ -61,7 +61,7 @@ const login = (req,res) => {
         const token = jwt.sign({id:user.user_id} , process.env.JWT_SECRET)
 
       
-        res.status(200).json({token,username:user.name,message:"login successful!"})
+        res.status(200).json({token:token,userDetails:{id:user.user_id,username:user.name},message:"login successful!"})
     })
 
    })
